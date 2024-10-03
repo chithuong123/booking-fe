@@ -1,0 +1,36 @@
+/* index.css */
+.gnb-wrap-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+.gnb-wrap-li {
+  margin-right: 20px;
+}
+
+.gnb-wrap-li a {
+  text-decoration: none;
+  color: black;
+  display: inline-block;
+  position: relative;
+  font-size: 18px; /* Increase font size */
+}
+
+.gnb-wrap-li a::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: black;
+  position: absolute;
+  bottom: 2px; /* Position the underline 2px from the bottom */
+  left: 0;
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.3s ease; /* Smooth transition */
+}
+
+.gnb-wrap-li a.active::after {
+  opacity: 1; /* Show underline when active */
+}

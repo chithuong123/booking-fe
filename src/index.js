@@ -1,13 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter as Router } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import useNavbarHeight from './hooks/useNavbarHeight'; // Import hook
+
+const RootComponent = () => {
+  const navbarHeight = useNavbarHeight(); // Use hook to get navbar height
+
+  return (
+    <div style={{ paddingTop: `${navbarHeight}px` }}>
+      <App />
+    </div>
+  );
+};
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <RootComponent />
+    </Router>
   </React.StrictMode>
 );
 

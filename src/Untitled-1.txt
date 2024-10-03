@@ -1,0 +1,76 @@
+// src/App.js
+import React, { useState, useEffect } from 'react';
+import './App.css';
+import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import Home from './pages/Home';
+import Agencies from './pages/Agencies';
+import Booking from './pages/Booking';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ServiceDetail from './pages/ServiceDetail';
+import Profile from './pages/Profile'; // Import Profile component
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
+
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate(); // Use useNavigate hook
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
+    navigate('/'); // Redirect to home page
+  };
+
+  return (
+    <div className="App">
+      <Navbar bg="dark" variant="dark" expand="lg" className="navbar-transparent">
+        <Container>
+          <Navbar.Brand as={Link} to="/" className="navbar-brand-large">Wedding Booking</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mx-auto">
+              <Nav.Link as={Link} to="/" className="mx-2">Home</Nav.Link>
+              <Nav.Link as={Link} to="/agencies" className="mx-2">Agencies</Nav.Link>
+            </Nav>
+            <Nav className="ms-auto">
+              {!isLoggedIn && (
+                <>
+                  <Nav.Link as={Link} to="/login">Login</Nav.Link>
+                  <Nav.Link as={Link} to="/register">Register</Nav.Link>
+                </>
+              )}
+              {isLoggedIn && (
+                <NavDropdown title="Account" id="basic-nav-dropdown" align="end">
+                  <NavDropdown.Item as={Link} to="/profile">Profile</NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/booking">Booking</NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item as="button" onClick={handleLogout}>Logout</NavDropdown.Item>
+                </NavDropdown>
+              )}
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/agencies" element={<Agencies />} />
+        <Route path="/booking" element={<Booking />} />
+        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/services/:serviceId" element={<ServiceDetail />} />
+        <Route path="/profile" element={<Profile />} /> {/* Add Profile route */}
+      </Routes>
+    </div>
+  );
+}
+
+export default App;
