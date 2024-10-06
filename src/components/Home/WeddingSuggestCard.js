@@ -1,27 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+// src/components/WeddingSuggestCard.js
+
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAgencyImageRequest } from '../../actions/agencyActions';
 
 const WeddingSuggestCard = () => {
-  const [image, setImage] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const dispatch = useDispatch();
+  const { image, loading, error } = useSelector((state) => state.agency);
 
   useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/agencies');
-        const agencies = response.data.slice(0, 1); // Get the first agency
-        const image = agencies[0].image; // Extract image from the first agency
-        setImage(image);
-        setLoading(false);
-      } catch (err) {
-        setError('Không thể tải hình ảnh.');
-        setLoading(false);
-      }
-    };
-
-    fetchImage();
-  }, []);
+    dispatch(fetchAgencyImageRequest());
+  }, [dispatch]);
 
   const buildImageUrl = (imagePath) => `https://res.cloudinary.com/dyilvah0c/${imagePath}`;
 

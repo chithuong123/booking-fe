@@ -1,32 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Container, Card, Row, Col, Spinner, Alert } from 'react-bootstrap';
+import { fetchBookingsRequest } from '../actions/bookingActions';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Booking() {
-  const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const dispatch = useDispatch();
+  const { bookings, loading, error } = useSelector((state) => state.booking);
 
   useEffect(() => {
-    const fetchBookings = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5000/api/bookings/user', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        setBookings(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError('Error fetching bookings.');
-        setLoading(false);
-      }
-    };
+    dispatch(fetchBookingsRequest());
+    console.log(dispatch(fetchBookingsRequest()));
 
-    fetchBookings();
-  }, []);
+  }, [dispatch]);
 
   if (loading) {
     return (

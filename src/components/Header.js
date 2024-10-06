@@ -1,8 +1,20 @@
-// Header.js
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../actions/authActions'; // Import action logout
 
-function Header({ isLoggedIn, handleLogout }) {
+function Header() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Lấy trạng thái đăng nhập từ Redux store
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
+  const handleLogout = () => {
+    dispatch(logout());  // Gọi action logout
+    navigate('/');       // Điều hướng về trang chủ sau khi logout
+  };
+
   return (
     <header className="header" style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000 }}>
       <div className="logo-box">

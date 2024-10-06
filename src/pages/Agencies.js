@@ -1,54 +1,57 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
+import { CloudinaryContext, Image, Transformation } from 'cloudinary-react';
 import { Container, Row, Col, Card, Button, Modal } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import {
+  fetchAgenciesRequest,
+  fetchServicesRequest,
+  fetchServiceDetailsRequest,
+} from '../actions/agencyActions';
 
 function Agencies() {
-  const [agencies, setAgencies] = useState([]);
+  const dispatch = useDispatch();
+  const { agencies, services, serviceDetails, loading, error } = useSelector((state) => state.agency);
   const [selectedAgency, setSelectedAgency] = useState(null);
-  const [services, setServices] = useState([]);
-  const [selectedService, setSelectedService] = useState(null);
-  const [serviceDetails, setServiceDetails] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/agencies')
-      .then(response => setAgencies(response.data))
-      .catch(error => console.error('Error fetching agencies:', error));
-  }, []);
+    dispatch(fetchAgenciesRequest());
+  }, [dispatch]);
 
   const handleAgencyChange = (agencyId) => {
     setSelectedAgency(agencyId);
-    axios.get(`http://localhost:5000/api/services/agency/${agencyId}`)
-      .then(response => setServices(response.data))
-      .catch(error => console.error('Error fetching services:', error));
+    dispatch(fetchServicesRequest(agencyId));
   };
 
   const handleServiceClick = (serviceId) => {
-    setSelectedService(serviceId);
-    axios.get(`http://localhost:5000/api/services/${serviceId}`)
-      .then(response => {
-        setServiceDetails(response.data);
-        setShowModal(true);
-      })
-      .catch(error => console.error('Error fetching service details:', error));
+    dispatch(fetchServiceDetailsRequest(serviceId));
+    setShowModal(true);
   };
+
+  const handleCloseModal = () => setShowModal(false);
 
   const buildImageUrl = (imagePath) => {
     return `https://res.cloudinary.com/dyilvah0c/${imagePath}`;
   };
 
-  const handleCloseModal = () => setShowModal(false);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <Container>
       <h1 className="my-4">Agencies</h1>
       <select className="form-select mb-4" onChange={(e) => handleAgencyChange(e.target.value)}>
         <option value="">Select an agency</option>
-        {agencies.map(agency => (
-          <option key={agency.id} value={agency.id}>{agency.name}</option>
+        {agencies.map((agency) => (
+          <option key={agency.id} value={agency.id}>
+            {agency.name}
+          </option>
         ))}
       </select>
 
@@ -56,7 +59,7 @@ function Agencies() {
         <div>
           <h2 className="my-4">Services</h2>
           <Row>
-            {services.map(service => (
+            {services.map((service) => (
               <Col md={4} key={service.id} className="mb-4">
                 <Card onClick={() => handleServiceClick(service.id)}>
                   {service.images && service.images.length > 0 && (
@@ -69,7 +72,9 @@ function Agencies() {
                   <Card.Body>
                     <Card.Title>{service.name}</Card.Title>
                     <Card.Text>{service.description}</Card.Text>
-                    <Link to={`/services/${service.id}`} className="btn btn-primary">View Details</Link>
+                    <Link to={service.id ? `/services/${service.id}` : '#'} className="btn btn-primary">
+                      View Details
+                    </Link>
                   </Card.Body>
                 </Card>
               </Col>
@@ -107,7 +112,9 @@ function Agencies() {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
+            <Button variant="secondary" onClick={handleCloseModal}>
+              Close
+            </Button>
           </Modal.Footer>
         </Modal>
       )}

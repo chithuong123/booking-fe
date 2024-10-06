@@ -1,0 +1,15 @@
+# Exclude 'node_modules' directory
+node_modules/
+
+# Exclude logs
+logs
+*.log
+
+# Exclude git directory and files
+.git
+.gitignore
+
+# Exclude other unnecessary files
+npm-debug.log
+yarn-error.log
+.DS_Store
