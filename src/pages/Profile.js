@@ -1,50 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Container, Card, Form, Button, Spinner, Alert, Tabs, Tab } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
+// Action types
+const FETCH_PROFILE_REQUEST = 'FETCH_PROFILE_REQUEST';
+const UPDATE_PROFILE_REQUEST = 'UPDATE_PROFILE_REQUEST';
+const UPDATE_PASSWORD_REQUEST = 'UPDATE_PASSWORD_REQUEST';
 
 function Profile() {
-  const [profile, setProfile] = useState({
-    username: '',
-    email: '',
-  });
+  const dispatch = useDispatch();
+  const { profile, loading, error, passwordSuccess, passwordError } = useSelector(state => state.profile);
+
   const [passwords, setPasswords] = useState({
     oldPassword: '',
     newPassword: '',
-    confirmPassword: '',
+    confirmPassword: ''
   });
+
   const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [passwordSuccess, setPasswordSuccess] = useState('');
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5000/api/profile', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        setProfile(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError('Error fetching profile.');
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, []);
+    dispatch({ type: FETCH_PROFILE_REQUEST });
+  }, [dispatch]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProfile((prevProfile) => ({
-      ...prevProfile,
-      [name]: value,
-    }));
+    dispatch({ type: UPDATE_PROFILE_REQUEST, payload: { ...profile, [name]: value } });
   };
 
   const handlePasswordChange = (e) => {
@@ -55,41 +36,18 @@ function Profile() {
     }));
   };
 
-  const handleSave = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.put('http://localhost:5000/api/profile', profile, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      setIsEditing(false);
-    } catch (error) {
-      setError('Error updating profile.');
-    }
+  const handleSaveProfile = () => {
+    setIsEditing(false);
+    dispatch({ type: UPDATE_PROFILE_REQUEST, payload: profile });
   };
 
-  const handlePasswordUpdate = async () => {
+  const handlePasswordUpdate = () => {
     if (passwords.newPassword !== passwords.confirmPassword) {
-      setPasswordError('New password and confirmation password do not match.');
-      setPasswordSuccess('');
+      alert('Passwords do not match!');
       return;
     }
-
-    try {
-      const token = localStorage.getItem('token');
-      await axios.put('http://localhost:5000/api/profile/password', passwords, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      setPasswordSuccess('Password updated successfully.');
-      setPasswordError('');
-      setPasswords({ oldPassword: '', newPassword: '', confirmPassword: '' });
-    } catch (error) {
-      setPasswordError('Error updating password.');
-      setPasswordSuccess('');
-    }
+    dispatch({ type: UPDATE_PASSWORD_REQUEST, payload: passwords });
+    setPasswords({ oldPassword: '', newPassword: '', confirmPassword: '' });
   };
 
   if (loading) {
@@ -138,7 +96,7 @@ function Profile() {
                   />
                 </Form.Group>
                 {isEditing ? (
-                  <Button variant="primary" onClick={handleSave}>Save</Button>
+                  <Button variant="primary" onClick={handleSaveProfile}>Save</Button>
                 ) : (
                   <Button variant="secondary" onClick={() => setIsEditing(true)}>Edit</Button>
                 )}

@@ -1,39 +1,28 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Container, Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { registerUserRequest } from '../actions/registerActions';
 
 function Register() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { loading, error, successMessage } = useSelector((state) => state.register);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', {
-        username,
-        email,
-        password,
-      });
-      localStorage.setItem('token', response.data.token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-      setSuccess(response.data.message);
-      setError('');
+  // Điều hướng về home sau khi đăng ký thành công
+  useEffect(() => {
+    if (successMessage) {
       navigate('/');
-      window.location.reload(); // Reload the page to update the UI
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.errors) {
-        setError(error.response.data.errors.join(', '));
-      } else {
-        setError('There was an error registering the user!');
-      }
-      setSuccess('');
     }
+  }, [successMessage, navigate]);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    dispatch(registerUserRequest({ username, email, password }));
   };
 
   return (
@@ -67,10 +56,12 @@ function Register() {
             required
           />
         </Form.Group>
-        <Button type="submit">Register</Button>
+        <Button type="submit" disabled={loading}>
+          {loading ? 'Registering...' : 'Register'}
+        </Button>
       </Form>
       {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
-      {success && <Alert variant="success" className="mt-3">{success}</Alert>}
+      {successMessage && <Alert variant="success" className="mt-3">{successMessage}</Alert>}
     </Container>
   );
 }

@@ -1,38 +1,28 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Container, Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { loginRequest } from '../actions/authActions';
 
-function Login({ setIsLoggedIn }) {
+function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { error, success, loading } = useSelector(state => state.auth);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
-        email,
-        password,
-      });
-      localStorage.setItem('token', response.data.token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-      setSuccess(response.data.message);
-      setError('');
-      setIsLoggedIn(true);
-      navigate('/');
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.errors) {
-        setError(error.response.data.errors.join(', '));
-      } else {
-        setError('There was an error logging in!');
-      }
-      setSuccess('');
-    }
+    dispatch(loginRequest({ email, password }));
   };
+
+  // Điều hướng về trang chủ nếu đăng nhập thành công
+  useEffect(() => {
+    if (success) {
+      navigate('/');  // Điều hướng về home
+    }
+  }, [success, navigate]);
 
   return (
     <Container className="my-4">
@@ -56,10 +46,11 @@ function Login({ setIsLoggedIn }) {
             required
           />
         </Form.Group>
-        <Button type="submit">Login</Button>
+        <Button type="submit" disabled={loading}>
+          {loading ? 'Logging in...' : 'Login'}
+        </Button>
       </Form>
       {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
-      {success && <Alert variant="success" className="mt-3">{success}</Alert>}
     </Container>
   );
 }

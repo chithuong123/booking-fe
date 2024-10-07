@@ -1,5 +1,4 @@
-// App.js
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -14,6 +13,10 @@ import './assets/Transitions.css';
 function App() {
   const { isLoggedIn, handleLogout } = useAuth();
   const location = useLocation();
+
+  useEffect(() => {
+    // Đảm bảo rằng `useEffect` này chỉ chạy khi thật sự cần thiết
+  }, [location]);
 
   return (
     <div className="App">

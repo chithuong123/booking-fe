@@ -1,8 +1,16 @@
-// Header.js
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 function Header({ isLoggedIn, handleLogout }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogoutClick = () => {
+    dispatch({ type: 'LOGOUT' });  // Gửi action logout
+    navigate('/login');
+  };
+
   return (
     <header className="header" style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000 }}>
       <div className="logo-box">
@@ -24,7 +32,7 @@ function Header({ isLoggedIn, handleLogout }) {
               <li className="gnb-wrap-li">
                 <NavLink to="/profile" className={({ isActive }) => (isActive ? 'active' : '')}>Profile</NavLink>
               </li>
-              <li className="gnb-wrap-li" onClick={handleLogout}>
+              <li className="gnb-wrap-li" onClick={handleLogoutClick}>
                 <span style={{ cursor: 'pointer' }}>Logout</span>
               </li>
             </>
