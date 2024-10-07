@@ -6,7 +6,7 @@ import { loginApi } from '../api/authApi';
 function* loginSaga(action) {
   try {
     const response = yield call(loginApi, action.payload);
-    const token = `Bearer ${response.data.token}`;  // Thêm tiền tố "Bearer "
+    const token = `${response.data.token}`;  // Thêm tiền tố "Bearer "
     localStorage.setItem('token', token);  // Lưu token vào localStorage
     axios.defaults.headers.common['Authorization'] = token;  // Thiết lập header Authorization
     yield put({ type: 'LOGIN_SUCCESS', payload: { message: response.data.message } });

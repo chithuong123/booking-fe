@@ -1,18 +1,14 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../actions/authActions'; // Import action logout
+import { useDispatch } from 'react-redux';
 
-function Header() {
+function Header({ isLoggedIn, handleLogout }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Lấy trạng thái đăng nhập từ Redux store
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-
-  const handleLogout = () => {
-    dispatch(logout());  // Gọi action logout
-    navigate('/');       // Điều hướng về trang chủ sau khi logout
+  const handleLogoutClick = () => {
+    dispatch({ type: 'LOGOUT' });  // Gửi action logout
+    navigate('/login');
   };
 
   return (
@@ -36,7 +32,7 @@ function Header() {
               <li className="gnb-wrap-li">
                 <NavLink to="/profile" className={({ isActive }) => (isActive ? 'active' : '')}>Profile</NavLink>
               </li>
-              <li className="gnb-wrap-li" onClick={handleLogout}>
+              <li className="gnb-wrap-li" onClick={handleLogoutClick}>
                 <span style={{ cursor: 'pointer' }}>Logout</span>
               </li>
             </>
