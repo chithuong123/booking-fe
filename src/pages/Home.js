@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet';
 import '../assets/Home.css';
 import WeddingCenterBanner from '../components/Home/WeddingCenterBanner';
 import WeddingCenterSlider from '../components/Home/WeddingCenterSlider';
+import './booking.css';
 
 function Home() {
   return (
@@ -20,7 +21,7 @@ function Home() {
 
 const HelmetConfig = () => (
   <Helmet>
-    <link rel="stylesheet" href="https://www.weddingbook.vn/_next/static/css/957e5a80d40fc4fc.css" />
+    <link rel="stylesheet" href="./booking.css" />
     <style>
       {`body .only-pc { display: inline-block !important; }`}
     </style>

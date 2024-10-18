@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3001';
+const BASE_URL = 'http://be-load-1000929963.ap-southeast-2.elb.amazonaws.com';
 
 const API_ENDPOINTS = {
   LOGIN: `${BASE_URL}/api/auth/login`,

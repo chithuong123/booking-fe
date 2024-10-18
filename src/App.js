@@ -34,7 +34,7 @@ function App() {
 
 const HelmetConfig = () => (
   <Helmet>
-    <link rel="stylesheet" href="https://www.weddingbook.vn/_next/static/css/957e5a80d40fc4fc.css" />
+    <link rel="stylesheet" href="https://www.weddingbook.vn/_next/static/css/fef183ef9903beef.css" />
     <style>
       {`body .only-pc { display: inline-block !important; }`}
     </style>
