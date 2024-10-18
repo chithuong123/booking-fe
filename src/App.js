@@ -9,6 +9,7 @@ import useAuth from './hooks/useAuth';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './assets/Index.css';
 import './assets/Transitions.css';
+import './booking.css';
 
 function App() {
   const { isLoggedIn, handleLogout } = useAuth();
@@ -34,7 +35,7 @@ function App() {
 
 const HelmetConfig = () => (
   <Helmet>
-    <link rel="stylesheet" href="https://www.weddingbook.vn/_next/static/css/fef183ef9903beef.css" />
+    <link rel="stylesheet" href="./booking.css" />
     <style>
       {`body .only-pc { display: inline-block !important; }`}
     </style>
