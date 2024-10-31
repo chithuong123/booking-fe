@@ -58,20 +58,29 @@ function* fetchServiceDetailsSaga(action) {
   }
 }
 
-// Worker saga: Lấy hình ảnh của agency
 function* fetchAgencyImageSaga() {
   try {
     const response = yield call(fetchAgencyImageApi);
-    const agencies = response.data.slice(0, 1); // Lấy agency đầu tiên
-    const image = agencies[0]?.image;  // Lấy hình ảnh của agency đầu tiên
+    const agencies = response.data;
 
-    if (image) {
-      yield put(fetchAgencyImageSuccess(image));  // Dispatch action thành công
+    if (agencies.length > 0) {
+      const images = agencies.flatMap((agency) => {
+        if (typeof agency.image === "string") {
+          return agency.image.split(","); // Tách chuỗi thành mảng URL
+        }
+        return agency.image || []; // Nếu đã là mảng, trả về trực tiếp
+      });
+
+      if (images.length > 0) {
+        yield put(fetchAgencyImageSuccess(images));
+      } else {
+        yield put(fetchAgencyImageFailure("Không có hình ảnh cho các agencies này."));
+      }
     } else {
-      yield put(fetchAgencyImageFailure('Không có hình ảnh cho agency này.'));
+      yield put(fetchAgencyImageFailure("Danh sách agencies trống."));
     }
   } catch (error) {
-    const errorMessage = error.response?.data?.message || 'Không thể tải hình ảnh.';
+    const errorMessage = error.response?.data?.message || "Không thể tải hình ảnh.";
     yield put(fetchAgencyImageFailure(errorMessage));
   }
 }

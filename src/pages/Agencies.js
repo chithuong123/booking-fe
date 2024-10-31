@@ -35,6 +35,10 @@ function Agencies() {
     return `https://res.cloudinary.com/dyilvah0c/${imagePath}`;
   };
 
+  const formatImages = (images) => {
+    return typeof images === 'string' ? images.split(",") : images;
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -59,27 +63,38 @@ function Agencies() {
         <div>
           <h2 className="my-4">Services</h2>
           <Row>
-            {services.map((service) => (
-              <Col md={4} key={service.id} className="mb-4">
-                <Card onClick={() => handleServiceClick(service.id)}>
-                  {service.images && service.images.length > 0 && (
-                    <CloudinaryContext cloudName="dyilvah0c">
-                      <Image publicId={buildImageUrl(service.images[0])} className="card-img-top">
-                        <Transformation width="300" height="200" crop="fill" gravity="auto" />
-                      </Image>
-                    </CloudinaryContext>
-                  )}
-                  <Card.Body>
-                    <Card.Title>{service.name}</Card.Title>
-                    <Card.Text>{service.description}</Card.Text>
-                    <Link to={service.id ? `/services/${service.id}` : '#'} className="btn btn-primary">
-                      View Details
-                    </Link>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
+  {services.map((service) => (
+    <Col md={4} key={service.id} className="mb-4">
+      <Card onClick={() => handleServiceClick(service.id)} style={{ width: '300px', height: '400px' }}>
+        {service.images && service.images.length > 0 ? (
+          <CloudinaryContext cloudName="dyilvah0c">
+            <Image
+              publicId={buildImageUrl(formatImages(service.images)[0].trim())}
+              className="card-img-top"
+              style={{ width: '300px', height: '200px', objectFit: 'cover' }}
+            >
+              <Transformation width="300" height="200" crop="fill" gravity="auto" />
+            </Image>
+          </CloudinaryContext>
+        ) : (
+          <div style={{ width: '300px', height: '200px', backgroundColor: '#e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <p>No image available</p>
+          </div>
+        )}
+        <Card.Body style={{ overflow: 'hidden' }}>
+          <Card.Title>{service.name}</Card.Title>
+          <Card.Text style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {service.description}
+          </Card.Text>
+          <Link to={service.id ? `/services/${service.id}` : '#'} className="btn btn-primary">
+            View Details
+          </Link>
+        </Card.Body>
+      </Card>
+    </Col>
+  ))}
+</Row>
+
         </div>
       )}
 
@@ -89,19 +104,15 @@ function Agencies() {
             <Modal.Title>Service Details</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>ID: {serviceDetails.id}</p>
-            <p>Agency ID: {serviceDetails.agency_id}</p>
             <p>Name: {serviceDetails.name}</p>
             <p>Description: {serviceDetails.description}</p>
             <p>Price: {serviceDetails.price}</p>
-            <p>Created At: {serviceDetails.createdAt}</p>
-            <p>Updated At: {serviceDetails.updatedAt}</p>
             <div>
               <h3>Images</h3>
               {serviceDetails.images && serviceDetails.images.length > 0 ? (
                 <CloudinaryContext cloudName="dyilvah0c">
-                  {serviceDetails.images.map((image, index) => (
-                    <Image key={index} publicId={buildImageUrl(image)} className="img-fluid mb-2">
+                  {formatImages(serviceDetails.images).map((image, index) => (
+                    <Image key={index} publicId={buildImageUrl(image.trim())} className="img-fluid mb-2">
                       <Transformation width="600" height="400" crop="fill" gravity="auto" />
                     </Image>
                   ))}

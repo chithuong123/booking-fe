@@ -23,7 +23,12 @@ function* registerUserSaga(action) {
     // Điều hướng về trang chủ sau khi đăng ký thành công
     window.location.href = '/';
   } catch (error) {
-    const errorMessage = error.response?.data?.errors?.join(', ') || 'There was an error registering the user!';
+    // Kiểm tra lỗi 400 và thông báo "Email already exists"
+    const errorMessage =
+      error.response?.status === 400 && error.response?.data?.errors?.includes("Email already exists")
+        ? 'Email đã tồn tại. Vui lòng chọn email khác.'
+        : error.response?.data?.errors?.join(', ') || 'Đã xảy ra lỗi khi đăng ký!';
+
     yield put(registerUserFailure(errorMessage));
   }
 }

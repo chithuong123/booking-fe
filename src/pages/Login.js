@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Form, Button, Alert } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { loginRequest } from '../actions/authActions';
 
@@ -9,7 +8,6 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { error, success, loading } = useSelector(state => state.auth);
 
   const handleSubmit = (event) => {
@@ -17,12 +15,12 @@ function Login() {
     dispatch(loginRequest({ email, password }));
   };
 
-  // Điều hướng về trang chủ nếu đăng nhập thành công
+  // Điều hướng về trang chủ nếu đăng nhập thành công và reload lại trang
   useEffect(() => {
     if (success) {
-      navigate('/');  // Điều hướng về home
+      window.location.href = '/';  // Điều hướng và reload trang
     }
-  }, [success, navigate]);
+  }, [success]);
 
   return (
     <Container className="my-4">

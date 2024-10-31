@@ -17,20 +17,17 @@ export const FETCH_AGENCY_IMAGE_FAILURE = 'FETCH_AGENCY_IMAGE_FAILURE';
 
 // Action creators
 export const fetchAgenciesRequest = () => ({ type: FETCH_AGENCIES_REQUEST });
+export const fetchAgenciesSuccess = (agencies) => ({ type: FETCH_AGENCIES_SUCCESS, payload: agencies });
+export const fetchAgenciesFailure = (error) => ({ type: FETCH_AGENCIES_FAILURE, payload: error });
+
 export const fetchServicesRequest = (agencyId) => ({ type: FETCH_SERVICES_REQUEST, payload: agencyId });
+export const fetchServicesSuccess = (services) => ({ type: FETCH_SERVICES_SUCCESS, payload: services });
+export const fetchServicesFailure = (error) => ({ type: FETCH_SERVICES_FAILURE, payload: error });
+
 export const fetchServiceDetailsRequest = (serviceId) => ({ type: FETCH_SERVICE_DETAILS_REQUEST, payload: serviceId });
+export const fetchServiceDetailsSuccess = (serviceDetails) => ({ type: FETCH_SERVICE_DETAILS_SUCCESS, payload: serviceDetails });
+export const fetchServiceDetailsFailure = (error) => ({ type: FETCH_SERVICE_DETAILS_FAILURE, payload: error });
 
-// Action creators
-export const fetchAgencyImageRequest = () => ({
-  type: FETCH_AGENCY_IMAGE_REQUEST,
-});
-
-export const fetchAgencyImageSuccess = (image) => ({
-  type: FETCH_AGENCY_IMAGE_SUCCESS,
-  payload: image,
-});
-
-export const fetchAgencyImageFailure = (error) => ({
-  type: FETCH_AGENCY_IMAGE_FAILURE,
-  payload: error,
-});
+export const fetchAgencyImageRequest = () => ({ type: FETCH_AGENCY_IMAGE_REQUEST });
+export const fetchAgencyImageSuccess = (images) => ({ type: FETCH_AGENCY_IMAGE_SUCCESS, payload: images });
+export const fetchAgencyImageFailure = (error) => ({ type: FETCH_AGENCY_IMAGE_FAILURE, payload: error });

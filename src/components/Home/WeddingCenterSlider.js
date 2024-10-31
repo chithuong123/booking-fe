@@ -19,7 +19,6 @@ const WeddingCenterSlider = () => (
       </div>
       <button type="button" className="slick-arrow slick-next">Next</button>
     </div>
-    <button className="btn-seemore-pink">Xem thêm &nbsp;<span className="icon icon-arrow-narrow-right"></span></button>
   </div>
 );
 

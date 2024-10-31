@@ -1,14 +1,13 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 function Header({ isLoggedIn, handleLogout }) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleLogoutClick = () => {
     dispatch({ type: 'LOGOUT' });  // Gửi action logout
-    navigate('/login');
+    window.location.href = '/login';  // Điều hướng về trang login và reload lại trang
   };
 
   return (

@@ -3,27 +3,27 @@ import { useLocation } from 'react-router-dom';
 
 const useNavbarHeight = () => {
   const [navbarHeight, setNavbarHeight] = useState(0);
-  const location = useLocation(); // Use useLocation hook
+  const location = useLocation();
 
   useEffect(() => {
+    const navbar = document.querySelector('.header');
+
+    if (!navbar) return; // Nếu không có navbar, thoát sớm
+
     const updateNavbarHeight = () => {
-      const navbar = document.querySelector('.header');
-      if (navbar) {
-        setNavbarHeight(navbar.offsetHeight);
-      }
+      setNavbarHeight(navbar.offsetHeight);
     };
 
-    // Update navbar height immediately
+    // Sử dụng ResizeObserver để theo dõi thay đổi kích thước của navbar
+    const resizeObserver = new ResizeObserver(() => updateNavbarHeight());
+    resizeObserver.observe(navbar);
+
+    // Cập nhật chiều cao navbar ngay lập tức
     updateNavbarHeight();
 
-    // Add event listener to update navbar height on window resize
-    window.addEventListener('resize', updateNavbarHeight);
-
-    // Cleanup event listener on component unmount
-    return () => {
-      window.removeEventListener('resize', updateNavbarHeight);
-    };
-  }, [location]); // Re-run effect when location changes
+    // Cleanup observer khi component unmount
+    return () => resizeObserver.disconnect();
+  }, [location]);
 
   return navbarHeight;
 };

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, Form, Button, Alert } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { Container, Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { registerUserRequest } from '../actions/registerActions';
 
@@ -10,15 +9,21 @@ function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { loading, error, successMessage } = useSelector((state) => state.register);
 
-  // Điều hướng về home sau khi đăng ký thành công
+  // Điều hướng về home và reload lại trang sau khi đăng ký thành công
   useEffect(() => {
     if (successMessage) {
-      navigate('/');
+      window.location.href = '/';  // Điều hướng và reload trang
     }
-  }, [successMessage, navigate]);
+  }, [successMessage]);
+
+  // Hiển thị alert nếu có lỗi
+  useEffect(() => {
+    if (error) {
+      alert(error);
+    }
+  }, [error]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -60,8 +65,6 @@ function Register() {
           {loading ? 'Registering...' : 'Register'}
         </Button>
       </Form>
-      {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
-      {successMessage && <Alert variant="success" className="mt-3">{successMessage}</Alert>}
     </Container>
   );
 }
